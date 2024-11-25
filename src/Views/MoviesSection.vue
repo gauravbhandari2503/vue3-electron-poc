@@ -1,19 +1,22 @@
 <template>
-    <div class="movies-section">
-      <h1 class="section-title">Movies Section</h1>
-      <div class="movies-grid">
-        <MovieCard
-          v-for="movie in movies"
-          :key="movie.id"
-          :movie="movie"
-        />
-      </div>
+  <div :class="['movies-section', theme]">
+    <button @click="theme = theme === 'light' ? 'dark' : 'light'">
+      Change Theme
+    </button>
+    <h1 class="section-title">Movies Section</h1>
+    <div class="movies-grid">
+      <MovieCard
+        v-for="movie in movies"
+        :key="movie.id"
+        :movie="movie"
+      />
     </div>
-  </template>
+  </div>
+</template>
 <script lang="ts" setup>
 import MovieCard from './../Components/MovieCard.vue';
 import type { Movie } from '../Interface/MovieInterface';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const movies = ref<Movie[]>([
     {
         image: 'https://image.tmdb.org/t/p/w500/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg',
@@ -44,12 +47,35 @@ const movies = ref<Movie[]>([
         id: 4,
     },
 ]);
-console.log(movies.value);
+const theme = ref<'light' | 'dark'>('light');
+onMounted(() => {
+  if (window.electron?.onThemeChange) {
+    window.electron.onThemeChange((newTheme: 'light' | 'dark') => {
+      theme.value = newTheme;
+    });
+  }
+});
 </script>
 <style scoped>
 .movies-section {
   padding: 2rem;
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.movies-section.light {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.movies-section.dark {
+  background-color: #333;
+  color: #ffffff;
+}
+
+.movie-card {
+  background-color: inherit;
+  color: inherit;
 }
 .section-title {
   font-size: 2rem;

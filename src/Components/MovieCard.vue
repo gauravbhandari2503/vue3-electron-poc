@@ -46,7 +46,7 @@ const props = defineProps<{
 }
 .movie-description {
   font-size: 0.9rem;
-  color: #666;
+  color: inherit;
   margin: 0 0 0.5rem 0;
 }
 .movie-rating {
